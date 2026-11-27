@@ -2,10 +2,10 @@
 **Course:** Cryptography and Network Security (CNS)  
 **Team:** Team 07 (SoCSE)  
 **Team Members:**
-- **Arudha Goudar (01fe23bcs059)** — Authentication & RBAC Backend
-- **Harshavardhan Undodi (01fe23bcs219)** — Cryptographic Key Engine & License Generation
-- **Sumit Rathod (01fe23bcs167)** — Client-Side Validator & Protected Application (`SecureEditor`)
-- **Priyanka N D (01fe23bcs184)** — Web Interface & Administrator Dashboard
+- **Arudha Goudar (01fe23bcs059)** 
+- **Harshavardhan Undodi (01fe23bcs219)** 
+- **Sumit Rathod (01fe23bcs167)** 
+- **Priyanka N D (01fe23bcs184)**
 
 ---
 
