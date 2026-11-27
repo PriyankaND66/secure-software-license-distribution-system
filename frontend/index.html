@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Software License Distribution System | CNS Project</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <span style="color:#6366f1;">🛡️</span> SecureLicense
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="/docs" target="_blank">Swagger API</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="text-align: center; padding: 3rem 1.5rem; background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: #38bdf8;">Secure Software License Distribution System</h1>
+            <p style="font-size: 1.1rem; color: #94a3b8; max-width: 800px; margin: 0 auto 2rem;">
+                A centralized, cryptographically enforced software licensing framework built with 
+                <strong>Ed25519 Digital Signatures</strong>, <strong>AES-256-GCM AEAD Encryption</strong>, 
+                <strong>SHA-256 Integrity Digests</strong>, and <strong>Argon2id Authentication</strong>.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="login.html" class="btn btn-primary" style="padding: 0.8rem 1.75rem; font-size: 1rem;">Launch Web Portal</a>
+                <a href="register.html" class="btn btn-outline" style="padding: 0.8rem 1.75rem; font-size: 1rem;">Create Account</a>
+            </div>
+        </div>
+
+        <div class="grid-4" style="margin-top: 2rem;">
+            <div class="metric-box">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔑</div>
+                <div class="metric-label" style="color: #38bdf8; font-weight: bold;">Asymmetric Signing</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                    Server holds Ed25519 Private Key. Protected client applications hold only the Public Key to mathematically verify genuine licenses.
+                </p>
+            </div>
+            <div class="metric-box">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                <div class="metric-label" style="color: #6366f1; font-weight: bold;">AES-GCM Encryption</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                    Confidentiality for feature tokens and user payloads using 256-bit Authenticated Encryption with dynamic 12-byte nonces.
+                </p>
+            </div>
+            <div class="metric-box">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
+                <div class="metric-label" style="color: #10b981; font-weight: bold;">Device Binding</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                    Binds licenses to machine hardware fingerprints, preventing unauthorized license sharing and pirated redistribution.
+                </p>
+            </div>
+            <div class="metric-box">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⛓️</div>
+                <div class="metric-label" style="color: #f59e0b; font-weight: bold;">Chained Audit Logs</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.5rem;">
+                    Linear SHA-256 hash chaining ensures security logs are tamper-evident. Database manipulation is detected instantly.
+                </p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 2rem;">
+            <div class="card-title">Project Team Details (Team 07 - SoCSE)</div>
+            <div class="grid-4" style="margin-top: 1rem;">
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <strong style="color: #38bdf8;">Arudha Goudar</strong><br>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">01fe23bcs059</span><br>
+                    <span class="badge badge-info" style="margin-top: 0.5rem;">Auth & RBAC Backend</span>
+                </div>
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <strong style="color: #38bdf8;">Harshavardhan Undodi</strong><br>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">01fe23bcs219</span><br>
+                    <span class="badge badge-info" style="margin-top: 0.5rem;">Crypto & Keypair Engine</span>
+                </div>
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <strong style="color: #38bdf8;">Sumit Rathod</strong><br>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">01fe23bcs167</span><br>
+                    <span class="badge badge-info" style="margin-top: 0.5rem;">Validator & Client App</span>
+                </div>
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; border: 1px solid var(--border);">
+                    <strong style="color: #38bdf8;">Priyanka N D</strong><br>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">01fe23bcs184</span><br>
+                    <span class="badge badge-info" style="margin-top: 0.5rem;">Frontend & Admin UI</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Cryptography and Network Security (CNS) Capstone Project &copy; 2026. SoCSE.
+    </footer>
+</body>
+</html>

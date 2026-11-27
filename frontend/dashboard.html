@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Secure Software License Distribution System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <span style="color:#6366f1;">🛡️</span> SecureLicense
+        </a>
+        <div class="nav-links">
+            <span id="user-display" style="color: var(--accent-blue); font-size: 0.9rem;"></span>
+            <span id="role-badge" class="badge badge-info">USER</span>
+            <button class="btn btn-outline btn-sm" onclick="Auth.logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-size: 1.75rem;">My Software Licenses</h1>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Manage, activate, and download your cryptographically signed license packages.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openRequestModal()">+ Request Trial License</button>
+        </div>
+
+        <div id="dash-alert" class="alert"></div>
+
+        <div class="card">
+            <div class="card-title">Issued Licenses</div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>License ID</th>
+                            <th>Software</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Device Binding</th>
+                            <th>Expires On</th>
+                            <th>Features</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="licenses-table-body">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--text-secondary);">Loading your licenses...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request License Modal -->
+    <div id="request-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 0.5rem;">Request Trial License</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem;">
+                Standard users can self-provision a free 30-day evaluation trial. Standard and Perpetual licenses are provisioned by an Administrator via the Admin Console.
+            </p>
+
+            <form id="request-license-form">
+                <div class="form-group">
+                    <label>Software Product</label>
+                    <select id="req-software-id" class="form-control">
+                        <option value="1">SecureEditor (v1.0.0)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>License Classification</label>
+                    <select id="req-license-type" class="form-control">
+                        <option value="TRIAL">TRIAL (30-Day Free Evaluation - Self-Service)</option>
+                        <option value="STANDARD" disabled>STANDARD (Paid 1-Year - Requires Admin Issuance)</option>
+                        <option value="PERPETUAL" disabled>PERPETUAL (Paid Enterprise - Requires Admin Issuance)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Optional Device ID (Hardware Fingerprint)</label>
+                    <input type="text" id="req-device-id" class="form-control" placeholder="e.g. DEV-16F8-3A87 (Leave blank for unbound)">
+                    <small style="color: var(--text-secondary);">You can also bind your device later when activating.</small>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeRequestModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Request 30-Day Trial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Activate License Modal -->
+    <div id="activate-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 0.5rem;">Activate & Bind Device</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem;">
+                Bind this license to your current hardware fingerprint to enable execution.
+            </p>
+
+            <form id="activate-license-form">
+                <input type="hidden" id="act-license-id">
+                
+                <div class="form-group">
+                    <label>Machine Fingerprint (Device ID)</label>
+                    <input type="text" id="act-device-id" class="form-control" required placeholder="DEV-XXXX-XXXX">
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeActivateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">Activate License</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        Auth.requireAuth();
+        const user = Auth.getUser();
+        if (user) {
+            document.getElementById('user-display').textContent = `Signed in as: ${user.username}`;
+            if (user.role === 'ADMIN') {
+                document.getElementById('role-badge').outerHTML = '<a href="admin.html" class="badge badge-revoked" style="text-decoration:none; margin-left: 0.5rem;" title="Go to Administrator Console">ADMIN CONSOLE ↗</a>';
+            } else {
+                document.getElementById('role-badge').textContent = user.role;
+            }
+        }
+
+        async function loadLicenses() {
+            const tbody = document.getElementById('licenses-table-body');
+            try {
+                const licenses = await apiRequest('/licenses/my-licenses');
+                if (licenses.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">No licenses issued yet. Click "Request New License" to get started!</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = licenses.map(lic => {
+                    const statusClass = lic.status === 'ACTIVE' ? 'badge-active' : (lic.status === 'EXPIRED' ? 'badge-expired' : 'badge-revoked');
+                    const expFormatted = new Date(lic.expiry_date).toLocaleDateString();
+                    const featuresList = lic.features.join(', ');
+                    const deviceBound = lic.device_id || '<span style="color:#94a3b8;">Unbound</span>';
+
+                    return `
+                        <tr>
+                            <td><strong style="color: var(--accent-blue);">${lic.license_id}</strong></td>
+                            <td>${lic.software_name || 'SecureEditor'}</td>
+                            <td><span class="badge badge-info">${lic.license_type}</span></td>
+                            <td><span class="badge ${statusClass}">${lic.status}</span></td>
+                            <td><code>${deviceBound}</code></td>
+                            <td>${expFormatted}</td>
+                            <td><small style="color: var(--text-secondary);">${featuresList}</small></td>
+                            <td>
+                                <div style="display:flex; gap: 0.4rem;">
+                                    <button class="btn btn-outline btn-sm" onclick="downloadLicenseFile('${lic.license_id}')" title="Download signed .lic file">
+                                        📥 .lic
+                                    </button>
+                                    ${!lic.device_id ? `<button class="btn btn-success btn-sm" onclick="openActivateModal('${lic.license_id}')">Activate</button>` : ''}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                showAlert('dash-alert', `Failed to load licenses: ${err.message}`);
+            }
+        }
+
+        function openRequestModal() {
+            document.getElementById('request-modal').classList.add('active');
+        }
+        function closeRequestModal() {
+            document.getElementById('request-modal').classList.remove('active');
+        }
+
+        function openActivateModal(licenseId) {
+            document.getElementById('act-license-id').value = licenseId;
+            document.getElementById('activate-modal').classList.add('active');
+        }
+        function closeActivateModal() {
+            document.getElementById('activate-modal').classList.remove('active');
+        }
+
+        // Request Form Submission
+        document.getElementById('request-license-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const softwareId = parseInt(document.getElementById('req-software-id').value);
+            const licenseType = document.getElementById('req-license-type').value;
+            const deviceId = document.getElementById('req-device-id').value.trim() || null;
+
+            try {
+                const res = await apiRequest(`/licenses/request?software_id=${softwareId}&license_type=${licenseType}${deviceId ? '&device_id=' + encodeURIComponent(deviceId) : ''}`, {
+                    method: 'POST'
+                });
+                closeRequestModal();
+                showAlert('dash-alert', `License ${res.license_id} generated and signed successfully!`, false);
+                loadLicenses();
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            }
+        });
+
+        // Activate Form Submission
+        document.getElementById('activate-license-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const licenseId = document.getElementById('act-license-id').value;
+            const deviceId = document.getElementById('act-device-id').value.trim();
+
+            try {
+                await apiRequest(`/licenses/${licenseId}/activate`, {
+                    method: 'POST',
+                    body: JSON.stringify({ license_id: licenseId, device_id: deviceId })
+                });
+                closeActivateModal();
+                showAlert('dash-alert', `✓ License ${licenseId} activated, bound to ${deviceId}, and cryptographically re-signed by server! Download the updated .lic file to run on your machine.`, false);
+                loadLicenses();
+            } catch (err) {
+                alert(`Activation Error: ${err.message}`);
+            }
+        });
+
+        loadLicenses();
+    </script>
+</body>
+</html>

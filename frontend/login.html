@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Secure Software License Distribution System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <span style="color:#6366f1;">🛡️</span> SecureLicense
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="login.html" class="active">Login</a>
+            <a href="register.html">Register</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 450px; margin-top: 4rem;">
+        <div class="card">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; text-align: center;">Sign In</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+                Protected by Argon2id & Cryptographically Signed Session Tokens
+            </p>
+
+            <div id="login-alert" class="alert"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" class="form-control" required placeholder="Enter username or email" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Enter password" autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                    Authenticate
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border);">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: center;">
+                    Viva Quick-Fill Credentials:
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline btn-sm" style="flex: 1;" onclick="fillDemo('admin', 'Admin@123456')">
+                        Admin Demo
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" style="flex: 1;" onclick="fillDemo('testuser', 'User@123456')">
+                        User Demo
+                    </button>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                Don't have an account? <a href="register.html" style="color: var(--accent-blue);">Register here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        function fillDemo(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertEl = document.getElementById('login-alert');
+            alertEl.style.display = 'none';
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+
+                Auth.setToken(res.access_token);
+                Auth.setUser({
+                    username: res.username,
+                    role: res.role
+                });
+
+                showAlert('login-alert', `Authentication successful! Redirecting as ${res.role}...`, false);
+
+                setTimeout(() => {
+                    if (res.role === 'ADMIN') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 800);
+            } catch (err) {
+                showAlert('login-alert', err.message || 'Login failed. Invalid credentials.');
+            }
+        });
+    </script>
+</body>
+</html>

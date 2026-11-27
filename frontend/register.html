@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Secure Software License Distribution System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <span style="color:#6366f1;">🛡️</span> SecureLicense
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html" class="active">Register</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 480px; margin-top: 3.5rem;">
+        <div class="card">
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; text-align: center;">Create Account</h2>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; margin-bottom: 1.5rem;">
+                Hashed via Argon2id (Memory-hard PHC Winner)
+            </p>
+
+            <div id="reg-alert" class="alert"></div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" required minlength="3" placeholder="Choose a username" autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" required placeholder="user@domain.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password (Minimum 8 Characters)</label>
+                    <input type="password" id="password" class="form-control" required minlength="8" placeholder="Enter strong password" autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                    Register & Create Account
+                </button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+                Already have an account? <a href="login.html" style="color: var(--accent-blue);">Sign in</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertEl = document.getElementById('reg-alert');
+            alertEl.style.display = 'none';
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                showAlert('reg-alert', `Account '${res.username}' registered successfully! Redirecting to login...`, false);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1200);
+            } catch (err) {
+                showAlert('reg-alert', err.message || 'Registration failed.');
+            }
+        });
+    </script>
+</body>
+</html>

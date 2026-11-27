@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Database files (local runtime state)
+*.db
+*.db-wal
+*.db-shm
+*.sqlite3
+
+# Cryptographic Private Keys & Secrets (STRICTLY SERVER-SIDE - NEVER COMMIT!)
+backend/keys/ed25519_private.pem
+backend/keys/aes_master.key
+
+# Local license files generated during demos
+*.lic
+
+# IDE and OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
