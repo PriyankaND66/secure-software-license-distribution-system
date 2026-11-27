@@ -3,9 +3,9 @@
 **Team:** Team 07 (SoCSE)  
 **Team Members:**
 - **Arudha Goudar (01fe23bcs059)** 
-- **Harshavardhan Undodi (01fe23bcs219)** 
 - **Sumit Rathod (01fe23bcs167)** 
 - **Priyanka N D (01fe23bcs184)**
+- **Harshavardhan Undodi (01fe23bcs219)**
 
 ---
 
